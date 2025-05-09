@@ -8,22 +8,26 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-    android:roundIcon="@mipmap/ic_launcher_round"
-    android:supportsRtl="true"
-    android:theme="@style/Theme.ValveTight"
-    tools:targetApi="31">
-    <activity
-        android:name=".MainActivity"
-        android:exported="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
         android:theme="@style/Theme.ValveTight"
-        android:screenOrientation="portrait"
-        tools:ignore="LockedOrientationActivity"> <!-- Suppresses orientation warnings -->
-        <!-- android:label="@string/app_name" Removed as it's redundant -->
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
-</application>
+        tools:targetApi="31">
+        <activity
+            android:name=".LeakRateActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ValveTight"
+            tools:ignore="LockedOrientationActivity"> <!-- Suppresses orientation warnings -->
+            <!-- android:label="@string/app_name" Removed as it's redundant -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-    </manifest>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

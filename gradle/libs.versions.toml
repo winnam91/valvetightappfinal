@@ -1,15 +1,16 @@
 [versions]
-agp = "8.4.1"  # Using a common stable version of Android Gradle Plugin
-kotlin = "2.0.21" # Matching a stable Kotlin version often paired with AGP 8.4.1
-coreKtx = "1.13.1"
+agp = "8.4.1"
+kotlin = "1.9.23" # Changed to align with AGP 8.4.1 for more stability
+coreKtx = "1.13.1"   # Changed to a version compatible with SDK 34
 appcompat = "1.7.0"
-material = "1.12.0" # For Material Design Components in XML
-constraintlayout = "2.2.1"
-lifecycleRuntimeKtx = "2.9.0"
+material = "1.12.0"
+constraintlayout = "2.1.4" # Downgraded slightly for broader compatibility if 2.2.1 was an issue
+lifecycleRuntimeKtx = "2.8.3" # Adjusted to a commonly compatible version
+activityKtx = "1.9.0"       # <<< CHANGED/ADDED: This is the key version for activity-ktx
 junit = "4.13.2"
-androidxJunit = "1.2.1" # Renamed for clarity from junitVersion
+androidxJunit = "1.2.1"
 espressoCore = "3.6.1"
-# Removed Compose specific versions: activityCompose, composeBom
+# Removed 'activity = "1.10.1"' as we are now using activityKtx
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -17,18 +18,14 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 google-android-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" } # <<< CHANGED/ADDED
 
 # Testing Libraries
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-
-# Removed Compose specific libraries:
-# androidx-activity-compose, androidx-compose-bom, androidx-ui, androidx-ui-graphics,
-# androidx-ui-tooling, androidx-ui-tooling-preview, androidx-ui-test-manifest,
-# androidx-ui-test-junit4, androidx-material3
+# Removed 'androidx-activity' as we now use 'androidx-activity-ktx'
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-# Removed kotlin-compose plugin as it's not used for XML based UI

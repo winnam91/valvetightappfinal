@@ -33,6 +33,34 @@
     <string name="error_invalid_quantity">Quantity must be a positive whole number.</string>
     <string name="error_name_empty">Component name cannot be empty.</string>
 
+    <string name="leak_rate_activity_title">Leak Rate Calculator</string>
+    <string name="system_volume_label">System Volume:</string>
+    <string name="initial_pressure_label">Initial Pressure (P1):</string>
+    <string name="initial_pressure_hint">Enter Initial Pressure</string>
+    <string name="final_pressure_label">Final Pressure (P2):</string>
+    <string name="final_pressure_hint">Enter Final Pressure</string>
+    <string name="pressure_units_label">Pressure Units:</string>
+    <string name="time_duration_label">Time Duration (Δt):</string>
+    <string name="time_duration_hint">Enter Time Duration</string>
+    <string name="time_units_label">Time Units:</string>
+    <string name="calculate_leak_rate_button">Calculate Leak Rate</string>
+    <string name="calculated_leak_rate_label">Calculated Leak Rate:</string>
+    <string name="leak_rate_result_placeholder">-- SLPM</string>
+    <string name="error_pressure_p1_must_be_greater">Initial pressure (P1) must be greater than final pressure (P2).</string>
+
+    <string-array name="pressure_units_array">
+        <item>kPa</item>
+        <item>bar</item>
+        <item>psi</item>
+        <item>Pa</item> <!-- Added Pascals directly for internal consistency possibility -->
+    </string-array>
+
+    <string-array name="time_units_array">
+        <item>minutes</item>
+        <item>seconds</item>
+        <item>hours</item>
+    </string-array>
+
 
     <!-- UPDATED component types array -->
     <string-array name="component_types_array">

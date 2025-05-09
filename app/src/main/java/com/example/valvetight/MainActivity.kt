@@ -1,5 +1,6 @@
 package com.example.valvetight
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -27,14 +28,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textViewAddedComponentsList: TextView
     private lateinit var textViewTotalVolume: TextView
     private lateinit var buttonResetAll: Button
+    private lateinit var buttonGoToLeakRateCalc: Button
 
     // --- Data ---
     private val addedComponentsDescriptions = ArrayList<String>()
     private val addedVolumesInLiters = ArrayList<Double>()
-    private var totalVolumeInLiters = 0.0 // Initializer is NOT redundant here as it's modified by sum()
+    private var totalVolumeInLiters = 0.0
 
-    // --- Constants for Component Types (using const val) ---
-    private companion object { // const val needs to be in companion object or top-level
+    // --- Constants for Component Types ---
+    private companion object {
         private const val TYPE_UNKNOWN_VOLUME = "Unknown Volume"
         private const val TYPE_HOSE = "Hose"
         private const val TYPE_SPOOL_PIECE = "Spool Piece"
@@ -76,6 +78,8 @@ class MainActivity : AppCompatActivity() {
         textViewAddedComponentsList = findViewById(R.id.textViewAddedComponentsList)
         textViewTotalVolume = findViewById(R.id.textViewTotalVolume)
         buttonResetAll = findViewById(R.id.buttonResetAll)
+        buttonGoToLeakRateCalc = findViewById(R.id.buttonGoToLeakRateCalc)
+
         updateAddedComponentsListDisplay()
         updateTotalVolumeDisplay()
     }
@@ -89,6 +93,16 @@ class MainActivity : AppCompatActivity() {
         }
         buttonAddComponent.setOnClickListener { handleAddComponent() }
         buttonResetAll.setOnClickListener { resetAll() }
+
+        buttonGoToLeakRateCalc.setOnClickListener {
+            if (totalVolumeInLiters <= 0) {
+                Toast.makeText(this, "Please add components to calculate total volume first.", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+            val intent = Intent(this, LeakRateActivity::class.java)
+            intent.putExtra("TOTAL_VOLUME_LITERS", totalVolumeInLiters)
+            startActivity(intent)
+        }
     }
 
     private fun updateUIForSelectedComponentType() {
@@ -124,7 +138,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleAddComponent() {
         val selectedType = spinnerComponentType.selectedItem.toString()
-        // Initializers removed for these as they are assigned in all paths before use
         val singleItemVolumeLiters: Double
         val descriptionPart: String
         var componentDisplayName = selectedType
@@ -173,13 +186,15 @@ class MainActivity : AppCompatActivity() {
             val finalDescription = if (quantity > 1) {
                 String.format(
                     Locale.US,
-                    "%s x %d (%.3f L / %.5f m³ each): %.3f L (%.5f m³)",
+                    // Liters changed to %.1f
+                    "%s x %d (%.1f L / %.4f m³ each): %.1f L (%.4f m³)",
                     descriptionPart, quantity, singleItemVolumeLiters, singleItemVolumeM3, totalVolumeForItemsLiters, totalVolumeForItemsM3
                 )
             } else {
                 String.format(
                     Locale.US,
-                    "%s: %.3f L (%.5f m³)",
+                    // Liters changed to %.1f
+                    "%s: %.1f L (%.4f m³)",
                     descriptionPart, totalVolumeForItemsLiters, totalVolumeForItemsM3
                 )
             }
@@ -228,7 +243,8 @@ class MainActivity : AppCompatActivity() {
         val totalVolumeM3 = totalVolumeInLiters * 0.001
         textViewTotalVolume.text = String.format(
             Locale.US,
-            "%s%.3f L (%.5f m³)",
+            // Liters changed to %.1f
+            "%s%.1f L (%.4f m³)",
             getString(R.string.total_volume_label_prefix), totalVolumeInLiters, totalVolumeM3
         )
     }
@@ -236,53 +252,30 @@ class MainActivity : AppCompatActivity() {
     private fun parseSimpleFraction(fractionStr: String): Double? {
         val parts = fractionStr.trim().split('/')
         if (parts.size == 2) {
-            val numerator = parts[0].toDoubleOrNull()
-            val denominator = parts[1].toDoubleOrNull()
-            if (numerator != null && denominator != null && denominator != 0.0) return numerator / denominator
+            val num = parts[0].toDoubleOrNull(); val den = parts[1].toDoubleOrNull()
+            if (num != null && den != null && den != 0.0) return num / den
         }
         return null
     }
 
     private fun parseDimensionInput(input: String): Double? {
-        val trimmedInputStr = input.trim()
-        if (trimmedInputStr.isEmpty()) return null
-        trimmedInputStr.toDoubleOrNull()?.let { return it } // Direct decimal
-
-        // Mixed number with hyphen (e.g., "1-1/2")
-        if (trimmedInputStr.contains('-') && trimmedInputStr.contains('/')) {
-            val hyphenParts = trimmedInputStr.split('-', limit = 2)
-            if (hyphenParts.size == 2) {
-                val wholeNum = hyphenParts[0].toDoubleOrNull()
-                val fractionVal = parseSimpleFraction(hyphenParts[1])
-                if (wholeNum != null && fractionVal != null) return wholeNum + fractionVal
-            }
-        }
-
-        // Mixed number with space (e.g., "1 1/2")
-        if (trimmedInputStr.contains(' ') && trimmedInputStr.contains('/')) {
-            val spaceIndex = trimmedInputStr.lastIndexOf(' ')
-            if (spaceIndex > 0 && trimmedInputStr.indexOf('/') > spaceIndex) {
-                val wholeStrPart = trimmedInputStr.substring(0, spaceIndex)
-                val fractionStrPart = trimmedInputStr.substring(spaceIndex + 1)
-                val wholeNum = wholeStrPart.toDoubleOrNull()
-                val fractionVal = parseSimpleFraction(fractionStrPart)
-                if (wholeNum != null && fractionVal != null) return wholeNum + fractionVal
-            }
-        }
-        return parseSimpleFraction(trimmedInputStr) // Simple fraction (e.g., "1/2") or null
+        val trimmedInputStr = input.trim(); if (trimmedInputStr.isEmpty()) return null; trimmedInputStr.toDoubleOrNull()?.let { return it }
+        if (trimmedInputStr.contains('-') && trimmedInputStr.contains('/')) { val hyphenParts = trimmedInputStr.split('-', limit = 2)
+            if (hyphenParts.size == 2) { val wholeNum = hyphenParts[0].toDoubleOrNull(); val fractionVal = parseSimpleFraction(hyphenParts[1])
+                if (wholeNum != null && fractionVal != null) return wholeNum + fractionVal } }
+        if (trimmedInputStr.contains(' ') && trimmedInputStr.contains('/')) { val spaceIndex = trimmedInputStr.lastIndexOf(' ')
+            if (spaceIndex > 0 && trimmedInputStr.indexOf('/') > spaceIndex) { val wholeStrPart = trimmedInputStr.substring(0, spaceIndex); val fractionStrPart = trimmedInputStr.substring(spaceIndex + 1)
+                val wholeNum = wholeStrPart.toDoubleOrNull(); val fractionVal = parseSimpleFraction(fractionStrPart)
+                if (wholeNum != null && fractionVal != null) return wholeNum + fractionVal } }
+        return parseSimpleFraction(trimmedInputStr)
     }
 
     private fun calculateCylinderVolumeInLiters(diameterInMeters: Double, lengthInMeters: Double): Double {
-        val radius = diameterInMeters / 2.0
-        return PI * radius * radius * lengthInMeters * 1000
+        val radius = diameterInMeters / 2.0; return PI * radius * radius * lengthInMeters * 1000
     }
 
     private fun convertToMeters(value: Double, unit: String): Double {
-        return when (unit) {
-            "mm" -> value / 1000.0; "cm" -> value / 100.0; "meters" -> value
-            "inches" -> value * 0.0254; "feet" -> value * 0.3048; else -> value
-        }
+        return when (unit) { "mm" -> value / 1000.0; "cm" -> value / 100.0; "meters" -> value
+            "inches" -> value * 0.0254; "feet" -> value * 0.3048; else -> value }
     }
-
-    // Function "convertToLiters" is no longer used, so it has been removed.
 }

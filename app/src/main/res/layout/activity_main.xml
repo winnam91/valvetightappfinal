@@ -10,9 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".MainActivity">
-        <!-- Overall padding is removed from here and applied selectively or via margins -->
 
-        <!-- Logo ImageView - Now at the very top of the content area -->
+        <!-- Logo ImageView -->
         <ImageView
             android:id="@+id/imageViewLogo"
             android:layout_width="0dp"
@@ -24,10 +23,10 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"/>
-        <!-- Margin from the top edge of the screen -->
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"/>
+
         <!-- App Title TextView -->
         <TextView
             android:id="@+id/textViewAppTitle"
@@ -211,15 +210,15 @@
             app:layout_constraintBottom_toTopOf="@id/textViewTotalVolume"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:background="@color/light_gray"
+            android:background="?android:attr/colorBackground"
             android:nestedScrollingEnabled="true"
-        android:fillViewport="true">
+            android:fillViewport="true">
             <TextView
                 android:id="@+id/textViewAddedComponentsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="8dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 tools:text="Hose x 2 (5.71L each): 11.42L" />
         </ScrollView>
 
@@ -233,8 +232,23 @@
             android:text="@string/initial_total_volume"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/buttonResetAll"
+            app:layout_constraintBottom_toTopOf="@id/buttonGoToLeakRateCalc"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <!-- Button to go to Leak Rate Calculator -->
+        <Button
+            android:id="@+id/buttonGoToLeakRateCalc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Calculate Leak Rate"
+        style="@style/Widget.MaterialComponents.Button"
+        app:layout_constraintBottom_toTopOf="@id/buttonResetAll"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
         <!-- Reset All Button -->
         <Button
