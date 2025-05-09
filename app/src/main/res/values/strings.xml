@@ -1,0 +1,65 @@
+<resources>
+    <string name="app_name">ValveTight Vacuum Calculator</string>
+
+    <string name="app_title">Vacuum Volume Calculator</string>
+    <string name="component_type_label">Component Type:</string>
+
+    <!-- New strings for "Unknown Volume" -->
+    <string name="component_name_label">Component Name:</string>
+    <string name="component_name_hint">Enter Custom Component Name</string>
+
+    <!-- Existing strings for dimensions -->
+    <string name="enter_inner_diameter_hint">Enter Inner Diameter</string>
+    <string name="enter_length_hint">Enter Length</string>
+    <string name="units_for_dimensions_label">Units for Diameter/Length:</string>
+
+    <!-- New string for Quantity -->
+    <string name="quantity_label">Quantity:</string>
+    <string name="quantity_hint">Enter Quantity (e.g., 1, 2)</string>
+
+    <!-- Button and Display texts -->
+    <string name="add_component_button_text">Add Component Volume</string>
+    <string name="added_components_list_label">Added Components:</string>
+    <string name="total_volume_label_prefix">Total Volume: </string>
+    <string name="initial_total_volume">Total Volume: 0.0 L</string>
+    <string name="reset_all_button_text">Reset All</string>
+    <string name="default_quantity">1</string>
+    <string name="app_logo_description">Valvetight Company Logo</string>
+
+    <!-- Error messages -->
+    <string name="error_empty_field">Field cannot be empty.</string>
+    <string name="error_invalid_number">Please enter a valid number.</string>
+    <string name="error_non_positive_value">Value must be positive and non-zero.</string>
+    <string name="error_invalid_quantity">Quantity must be a positive whole number.</string>
+    <string name="error_name_empty">Component name cannot be empty.</string>
+
+
+    <!-- UPDATED component types array -->
+    <string-array name="component_types_array">
+        <item>Unknown Volume</item> <!-- Calculate from dimensions -->
+        <item>Hose</item>           <!-- Pre-defined volume -->
+        <item>Spool Piece</item>    <!-- Pre-defined volume -->
+        <item>T-piece</item>        <!-- Pre-defined volume -->
+        <item>Elbow</item>          <!-- Pre-defined volume -->
+        <item>Knock-out Vessel</item> <!-- Pre-defined volume -->
+    </string-array>
+
+    <string-array name="dimension_units_array">
+        <item>mm</item>
+        <item>cm</item>
+        <item>meters</item>
+        <item>inches</item>
+        <item>feet</item>
+    </string-array>
+
+    <!-- The volume_units_array and associated UI for known volume units might no longer be directly used
+         if "Known Volume" with user-entered value/unit is removed.
+         However, the conversion logic in Kotlin might still be useful internally or for future features.
+         For now, let's keep it, but the UI related to it (spinnerUnitsVolume) will be removed. -->
+    <string-array name="volume_units_array">
+        <item>Liters</item>
+        <item>Cubic Meters</item>
+        <item>Cubic Feet</item>
+        <item>Gallons</item>
+    </string-array>
+</resources>
