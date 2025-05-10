@@ -47,6 +47,7 @@
     <string name="calculated_leak_rate_label">Calculated Leak Rate:</string>
     <string name="leak_rate_result_placeholder">-- SLPM</string>
     <string name="error_pressure_p1_must_be_greater">Initial pressure (P1) must be greater than final pressure (P2).</string>
+    <string name="system_volume_hint_editable">Enter System Volume (L)</string>
 
     <string-array name="pressure_units_array">
         <item>kPa</item>

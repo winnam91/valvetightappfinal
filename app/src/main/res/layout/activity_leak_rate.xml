@@ -23,26 +23,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/textViewSystemVolumeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/system_volume_label"
-            app:layout_constraintTop_toBottomOf="@id/textViewLeakRateTitle"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/textViewSystemVolumeValue"
+        <!-- System Volume Input (Editable) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutSystemVolume"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            tools:text="123.456 L (0.12345 m³)"
-            android:textAppearance="?attr/textAppearanceBody1"
-            app:layout_constraintTop_toTopOf="@id/textViewSystemVolumeLabel"
-            app:layout_constraintBottom_toBottomOf="@id/textViewSystemVolumeLabel"
-            app:layout_constraintStart_toEndOf="@id/textViewSystemVolumeLabel"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            android:layout_marginTop="16dp"
+            android:hint="@string/system_volume_hint_editable"
+            app:layout_constraintTop_toBottomOf="@id/textViewLeakRateTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextSystemVolumeLiters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Initial Pressure P1 -->
         <com.google.android.material.textfield.TextInputLayout
@@ -50,11 +48,12 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:hint="@string/initial_pressure_hint"
-            app:layout_constraintTop_toBottomOf="@id/textViewSystemVolumeLabel"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayoutSystemVolume"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextInitialPressure"
                 android:layout_width="match_parent"
@@ -73,6 +72,7 @@
             app:layout_constraintTop_toBottomOf="@id/textInputLayoutInitialPressure"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextFinalPressure"
                 android:layout_width="match_parent"
@@ -80,7 +80,7 @@
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Pressure Units -->
+        <!-- Pressure Units Label -->
         <TextView
             android:id="@+id/textViewPressureUnitsLabel"
             android:layout_width="wrap_content"
@@ -90,6 +90,8 @@
             app:layout_constraintTop_toBottomOf="@id/textInputLayoutFinalPressure"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/spinnerPressureUnits"/>
+
+        <!-- Pressure Units Spinner -->
         <Spinner
             android:id="@+id/spinnerPressureUnits"
             android:layout_width="0dp"
@@ -101,7 +103,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:entries="@array/pressure_units_array" />
 
-        <!-- Time Duration -->
+        <!-- Time Duration Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutTimeDuration"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -112,6 +114,7 @@
             app:layout_constraintTop_toBottomOf="@id/spinnerPressureUnits"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextTimeDuration"
                 android:layout_width="match_parent"
@@ -119,7 +122,7 @@
                 android:inputType="numberDecimal" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Time Units -->
+        <!-- Time Units Label -->
         <TextView
             android:id="@+id/textViewTimeUnitsLabel"
             android:layout_width="wrap_content"
@@ -129,6 +132,8 @@
             app:layout_constraintTop_toBottomOf="@id/textInputLayoutTimeDuration"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="@id/spinnerTimeUnits"/>
+
+        <!-- Time Units Spinner -->
         <Spinner
             android:id="@+id/spinnerTimeUnits"
             android:layout_width="0dp"
@@ -152,7 +157,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Result Display -->
+        <!-- Result Display Label -->
         <TextView
             android:id="@+id/textViewCalculatedLeakRateLabel"
             android:layout_width="wrap_content"
@@ -162,6 +167,8 @@
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/buttonCalculateLeakRate"
             app:layout_constraintStart_toStartOf="parent"/>
+
+        <!-- Result Value Display -->
         <TextView
             android:id="@+id/textViewLeakRateResult"
             android:layout_width="0dp"

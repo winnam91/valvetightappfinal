@@ -95,12 +95,13 @@ class MainActivity : AppCompatActivity() {
         buttonResetAll.setOnClickListener { resetAll() }
 
         buttonGoToLeakRateCalc.setOnClickListener {
-            if (totalVolumeInLiters <= 0) {
-                Toast.makeText(this, "Please add components to calculate total volume first.", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
             val intent = Intent(this, LeakRateActivity::class.java)
-            intent.putExtra("TOTAL_VOLUME_LITERS", totalVolumeInLiters)
+            // We still pass the volume if available, LeakRateActivity can decide to use it or let user edit
+            if (totalVolumeInLiters > 0) {
+                intent.putExtra("TOTAL_VOLUME_LITERS", totalVolumeInLiters)
+            }
+            // If totalVolumeInLiters is 0 or less, we simply don't put the extra,
+            // and LeakRateActivity will show an empty field for system volume.
             startActivity(intent)
         }
     }
