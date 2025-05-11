@@ -11,23 +11,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ValveTight"
-        tools:targetApi="31">
-        <activity
-            android:name=".LeakRateActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.ValveTight"
-            tools:ignore="LockedOrientationActivity"> <!-- Suppresses orientation warnings -->
-            <!-- android:label="@string/app_name" Removed as it's redundant -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+    tools:targetApi="31">
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+    <activity
+        android:name=".SettingsActivity"
+        android:exported="false"
+        android:theme="@style/Theme.MaterialComponents.Light.Dialog.Alert" />
+
+    <activity
+        android:name=".LeakRateActivity"
+        android:exported="false" />
+    <!-- You might also want LeakRateActivity to have its own theme if needed,
+         or it will inherit from the application's Theme.ValveTight (which is NoActionBar) -->
+
+    <activity
+        android:name=".MainActivity"
+        android:exported="true"
+        android:screenOrientation="portrait"
+        android:theme="@style/Theme.ValveTight"
+    tools:ignore="LockedOrientationActivity">
+    <intent-filter>
+        <action android:name="android.intent.action.MAIN" />
+        <category android:name="android.intent.category.LAUNCHER" />
+    </intent-filter>
+</activity>
     </application>
 
-</manifest>
+    </manifest>

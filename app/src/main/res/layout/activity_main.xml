@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
@@ -11,7 +12,6 @@
         android:layout_height="wrap_content"
         tools:context=".MainActivity">
 
-        <!-- Logo ImageView -->
         <ImageView
             android:id="@+id/imageViewLogo"
             android:layout_width="0dp"
@@ -27,7 +27,6 @@
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"/>
 
-        <!-- App Title TextView -->
         <TextView
             android:id="@+id/textViewAppTitle"
             android:layout_width="wrap_content"
@@ -45,29 +44,44 @@
         <!-- Component Type Label -->
         <TextView
             android:id="@+id/textViewComponentTypeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:text="@string/component_type_label"
-            app:layout_constraintTop_toBottomOf="@id/textViewAppTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/spinnerComponentType" />
+            android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:text="@string/component_type_label"
+        android:textAppearance="?attr/textAppearanceSubtitle1"
+        app:layout_constraintTop_toBottomOf="@id/textViewAppTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/cardComponentTypeSpinner"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintBottom_toBottomOf="@id/cardComponentTypeSpinner"/>
 
-        <!-- Component Type Spinner -->
+        <!-- Component Type Spinner Wrapped in MaterialCardView -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardComponentTypeSpinner"
+            android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintTop_toTopOf="@id/textViewComponentTypeLabel"
+        app:layout_constraintBottom_toBottomOf="@id/textViewComponentTypeLabel"
+        app:layout_constraintStart_toEndOf="@id/textViewComponentTypeLabel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2">
+
         <Spinner
             android:id="@+id/spinnerComponentType"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="@id/textViewComponentTypeLabel"
-            app:layout_constraintStart_toEndOf="@id/textViewComponentTypeLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:entries="@array/component_types_array" />
+            android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:entries="@array/component_types_array"
+        android:background="@android:color/transparent"/>
+    </com.google.android.material.card.MaterialCardView>
 
-        <!-- Section for "Unknown Volume" - Name Input -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutComponentName"
             android:layout_width="0dp"
@@ -78,11 +92,10 @@
             android:layout_marginEnd="16dp"
             android:minHeight="56dp"
             android:hint="@string/component_name_hint"
-            app:layout_constraintTop_toBottomOf="@id/spinnerComponentType"
+            app:layout_constraintTop_toBottomOf="@id/cardComponentTypeSpinner"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:visibility="gone">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextComponentName"
                 android:layout_width="match_parent"
@@ -90,7 +103,6 @@
                 android:inputType="textCapWords" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Group for Dimensional Inputs (Used by "Unknown Volume") -->
         <LinearLayout
             android:id="@+id/layoutDimensionalInputs"
             android:layout_width="0dp"
@@ -110,7 +122,8 @@
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:minHeight="56dp"
-                android:hint="@string/enter_inner_diameter_hint">
+                android:hint="@string/enter_inner_diameter_hint"
+                app:suffixText="mm"> <!-- Placeholder: Will be set from Global Prefs -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextDiameter"
                     android:layout_width="match_parent"
@@ -125,7 +138,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:minHeight="56dp"
                 android:layout_marginTop="8dp"
-                android:hint="@string/enter_length_hint">
+                android:hint="@string/enter_length_hint"
+                app:suffixText="mm"> <!-- Placeholder: Will be set from Global Prefs -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextLength"
                     android:layout_width="match_parent"
@@ -133,22 +147,10 @@
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/textViewUnitsDimensionsLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/units_for_dimensions_label"/>
+            <!-- REMOVED: TextViewUnitsDimensionsLabel and spinnerUnitsDimensions -->
 
-            <Spinner
-                android:id="@+id/spinnerUnitsDimensions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:entries="@array/dimension_units_array" />
         </LinearLayout>
 
-        <!-- Quantity Input - Common for all types -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayoutQuantity"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -171,7 +173,6 @@
                 android:text="@string/default_quantity" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Add Component Button -->
         <Button
             android:id="@+id/buttonAddComponent"
             android:layout_width="0dp"
@@ -185,7 +186,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Added Components List Label -->
         <TextView
             android:id="@+id/textViewAddedComponentsListLabel"
             android:layout_width="wrap_content"
@@ -197,7 +197,6 @@
             app:layout_constraintTop_toBottomOf="@id/buttonAddComponent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <!-- ScrollView for Added Components -->
         <ScrollView
             android:id="@+id/scrollViewComponents"
             android:layout_width="0dp"
@@ -222,7 +221,6 @@
                 tools:text="Hose x 2 (5.71L each): 11.42L" />
         </ScrollView>
 
-        <!-- Total Volume Display -->
         <TextView
             android:id="@+id/textViewTotalVolume"
             android:layout_width="wrap_content"
@@ -235,7 +233,6 @@
             app:layout_constraintBottom_toTopOf="@id/buttonGoToLeakRateCalc"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <!-- Button to go to Leak Rate Calculator -->
         <Button
             android:id="@+id/buttonGoToLeakRateCalc"
             android:layout_width="0dp"
@@ -244,13 +241,12 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:text="Calculate Leak Rate"
-        style="@style/Widget.MaterialComponents.Button"
-        app:layout_constraintBottom_toTopOf="@id/buttonResetAll"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+            android:text="@string/go_to_leak_rate_button_text"
+            style="@style/Widget.MaterialComponents.Button"
+            app:layout_constraintBottom_toTopOf="@id/buttonResetAll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <!-- Reset All Button -->
         <Button
             android:id="@+id/buttonResetAll"
             android:layout_width="0dp"
@@ -259,8 +255,23 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/reset_all_button_text"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:text="@string/reset_all_button_text"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        app:layout_constraintBottom_toTopOf="@+id/buttonOpenSettings"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- NEW Settings Button -->
+        <Button
+            android:id="@+id/buttonOpenSettings"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:minHeight="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/settings_button_text"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>

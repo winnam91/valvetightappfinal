@@ -1,153 +1,174 @@
 package com.example.valvetight
 
+import android.content.SharedPreferences // <<< IMPORT
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+// import android.widget.Spinner // No longer directly using its selection for units
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Locale
+import kotlin.math.PI
 import kotlin.math.abs
 
 class LeakRateActivity : AppCompatActivity() {
 
-    // Renamed/Added UI elements for system volume
+    // UI Elements
     private lateinit var editTextSystemVolumeLiters: TextInputEditText
     private lateinit var textInputLayoutSystemVolume: TextInputLayout
-
-    private lateinit var editTextInitialPressure: TextInputEditText
-    private lateinit var textInputLayoutInitialPressure: TextInputLayout
-    private lateinit var editTextFinalPressure: TextInputEditText
-    private lateinit var textInputLayoutFinalPressure: TextInputLayout
-    private lateinit var spinnerPressureUnits: Spinner
-    private lateinit var editTextTimeDuration: TextInputEditText
-    private lateinit var textInputLayoutTimeDuration: TextInputLayout
-    private lateinit var spinnerTimeUnits: Spinner
-    private lateinit var buttonCalculateLeakRate: Button
+    private lateinit var editTextPressureChangeRate: TextInputEditText
+    private lateinit var textInputLayoutPressureChangeRate: TextInputLayout
+    // private lateinit var spinnerPressureChangeRateUnits: Spinner // Removed
+    private lateinit var editTextBleedDiameter: TextInputEditText
+    private lateinit var textInputLayoutBleedDiameter: TextInputLayout
+    // private lateinit var spinnerBleedDiameterUnits: Spinner // Removed
+    private lateinit var buttonCalculateAnalysis: Button
     private lateinit var textViewLeakRateResult: TextView
+    private lateinit var textViewVelocityResult: TextView
 
-    // Removed: private var systemVolumeLiters: Double = 0.0
-    // We will now get it from the EditText when needed.
+    // SharedPreferences
+    private lateinit var unitPrefs: SharedPreferences // <<< ADDED
 
-    private val PA_PER_KPA = 1000.0
-    private val PA_PER_BAR = 100000.0
-    private val PA_PER_PSI = 6894.757
-    private val STANDARD_ATMOSPHERIC_PRESSURE_PA = 101325.0
+    // Current effective units (will be loaded from prefs)
+    private var currentPressureUnitPreference: String = SettingsActivity.DEFAULT_VAL_PRESSURE_UNIT
+    private var currentLineDiameterUnitPreference: String = SettingsActivity.DEFAULT_VAL_LINE_SIZE_UNIT
+
+
+    private companion object { // Constants
+        private const val PA_PER_KPA = 1000.0; private const val PA_PER_BAR = 100000.0
+        private const val PA_PER_PSI = 6894.757; private const val PA_PER_MBAR = 100.0
+        private const val STANDARD_ATMOSPHERIC_PRESSURE_PA = 101325.0
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_leak_rate)
 
-        initializeUI()
+        unitPrefs = getSharedPreferences(SettingsActivity.PREFS_NAME, MODE_PRIVATE) // <<< INITIALIZE SharedPreferences
 
-        // Retrieve the passed volume and pre-fill if available
-        val passedVolume = intent.getDoubleExtra("TOTAL_VOLUME_LITERS", -1.0) // Use -1 or other sentinel
+        initializeUI()
+        loadUnitPreferencesAndUpdateUI() // <<< LOAD PREFS
+
+        val passedVolume = intent.getDoubleExtra("TOTAL_VOLUME_LITERS", -1.0)
         if (passedVolume > 0) {
             editTextSystemVolumeLiters.setText(String.format(Locale.US, "%.1f", passedVolume))
         }
-
         setupListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadUnitPreferencesAndUpdateUI() // <<< RE-LOAD PREFS when activity resumes
+    }
+
+    private fun loadUnitPreferencesAndUpdateUI() {
+        currentPressureUnitPreference = unitPrefs.getString(SettingsActivity.KEY_PRESSURE_UNIT, SettingsActivity.DEFAULT_VAL_PRESSURE_UNIT) ?: SettingsActivity.DEFAULT_VAL_PRESSURE_UNIT
+        currentLineDiameterUnitPreference = unitPrefs.getString(SettingsActivity.KEY_LINE_SIZE_UNIT, SettingsActivity.DEFAULT_VAL_LINE_SIZE_UNIT) ?: SettingsActivity.DEFAULT_VAL_LINE_SIZE_UNIT
+
+        // Update suffix texts
+        textInputLayoutSystemVolume.suffixText = "L" // System volume is always input in Liters
+        // For Pressure Change Rate, suffix is more complex as it's "PressureUnit/time"
+        // We'll assume "/min" for now based on the global pressure unit.
+        // If you need "/sec" etc., the global preference needs to be more specific (e.g. store "bar/min" directly)
+        // or add another preference for the time base of the rate.
+        textInputLayoutPressureChangeRate.suffixText = "$currentPressureUnitPreference/min"
+        textInputLayoutBleedDiameter.suffixText = currentLineDiameterUnitPreference
+    }
+
     private fun initializeUI() {
+        // ... (findViewById calls remain the same as your last full LeakRateActivity.kt,
+        // but REMOVE findViewById for the spinners that were deleted from the layout)
         editTextSystemVolumeLiters = findViewById(R.id.editTextSystemVolumeLiters)
         textInputLayoutSystemVolume = findViewById(R.id.textInputLayoutSystemVolume)
-
-        editTextInitialPressure = findViewById(R.id.editTextInitialPressure)
-        textInputLayoutInitialPressure = findViewById(R.id.textInputLayoutInitialPressure)
-        editTextFinalPressure = findViewById(R.id.editTextFinalPressure)
-        textInputLayoutFinalPressure = findViewById(R.id.textInputLayoutFinalPressure)
-        spinnerPressureUnits = findViewById(R.id.spinnerPressureUnits)
-        editTextTimeDuration = findViewById(R.id.editTextTimeDuration)
-        textInputLayoutTimeDuration = findViewById(R.id.textInputLayoutTimeDuration)
-        spinnerTimeUnits = findViewById(R.id.spinnerTimeUnits)
-        buttonCalculateLeakRate = findViewById(R.id.buttonCalculateLeakRate)
+        editTextPressureChangeRate = findViewById(R.id.editTextPressureChangeRate)
+        textInputLayoutPressureChangeRate = findViewById(R.id.textInputLayoutPressureChangeRate)
+        // spinnerPressureChangeRateUnits = findViewById(R.id.spinnerPressureChangeRateUnits) // REMOVED
+        editTextBleedDiameter = findViewById(R.id.editTextBleedDiameter)
+        textInputLayoutBleedDiameter = findViewById(R.id.textInputLayoutBleedDiameter)
+        // spinnerBleedDiameterUnits = findViewById(R.id.spinnerBleedDiameterUnits) // REMOVED
+        buttonCalculateAnalysis = findViewById(R.id.buttonCalculateAnalysis)
         textViewLeakRateResult = findViewById(R.id.textViewLeakRateResult)
+        textViewVelocityResult = findViewById(R.id.textViewVelocityResult)
+
+        // Suffix text setting moved to loadUnitPreferencesAndUpdateUI()
     }
 
-    // Removed displaySystemVolume() as it's now an editable field
-
-    private fun setupListeners() {
-        buttonCalculateLeakRate.setOnClickListener {
-            calculateAndDisplayLeakRate()
-        }
+    private fun setupListeners() { /* ... as before ... */
+        buttonCalculateAnalysis.setOnClickListener { performLeakAnalysis() }
     }
 
-    private fun calculateAndDisplayLeakRate() {
-        textInputLayoutSystemVolume.error = null // Clear error for system volume
-        textInputLayoutInitialPressure.error = null
-        textInputLayoutFinalPressure.error = null
-        textInputLayoutTimeDuration.error = null
+    private fun performLeakAnalysis() {
+        textInputLayoutSystemVolume.error = null; textInputLayoutPressureChangeRate.error = null; textInputLayoutBleedDiameter.error = null
 
-        // --- Get System Volume from EditText ---
         val systemVolumeStr = editTextSystemVolumeLiters.text.toString()
-        if (systemVolumeStr.isEmpty()) {
-            textInputLayoutSystemVolume.error = getString(R.string.error_empty_field)
-            Toast.makeText(this, "System Volume: " + getString(R.string.error_empty_field), Toast.LENGTH_SHORT).show()
-            return
-        }
-        val currentSystemVolumeLiters = systemVolumeStr.toDoubleOrNull()
-        if (currentSystemVolumeLiters == null || currentSystemVolumeLiters <= 0) {
-            textInputLayoutSystemVolume.error = getString(R.string.error_non_positive_value)
-            Toast.makeText(this, "System Volume: " + getString(R.string.error_non_positive_value), Toast.LENGTH_SHORT).show()
-            return
-        }
-        // --- End Get System Volume ---
+        if (systemVolumeStr.isEmpty()) { textInputLayoutSystemVolume.error = getString(R.string.error_empty_field); return }
+        val systemVolumeLiters = systemVolumeStr.toDoubleOrNull()
+        if (systemVolumeLiters == null || systemVolumeLiters <= 0) { textInputLayoutSystemVolume.error = getString(R.string.error_non_positive_value); return }
+        val systemVolumeM3 = systemVolumeLiters * 0.001
 
-        val p1Str = editTextInitialPressure.text.toString()
-        val p2Str = editTextFinalPressure.text.toString()
-        val timeDurationStr = editTextTimeDuration.text.toString()
+        val pressureChangeRateStr = editTextPressureChangeRate.text.toString()
+        if (pressureChangeRateStr.isEmpty()) { textInputLayoutPressureChangeRate.error = getString(R.string.error_empty_field); return }
+        val pressureChangeRateValue = pressureChangeRateStr.toDoubleOrNull()
+        if (pressureChangeRateValue == null) { textInputLayoutPressureChangeRate.error = getString(R.string.error_invalid_number); return }
 
-        if (p1Str.isEmpty()) { textInputLayoutInitialPressure.error = getString(R.string.error_empty_field); return }
-        if (p2Str.isEmpty()) { textInputLayoutFinalPressure.error = getString(R.string.error_empty_field); return }
-        if (timeDurationStr.isEmpty()) { textInputLayoutTimeDuration.error = getString(R.string.error_empty_field); return }
+        // <<< USE LOADED PREFERENCES FOR UNITS >>>
+        // Construct the rate unit string based on global pressure preference (assuming "/min")
+        val actualPressureRateUnit = "$currentPressureUnitPreference/min"
+        // If your pressure_change_rate_units_array contains this exact string, it will work directly with conversion functions.
+        // If not, the conversion functions need to parse currentPressureUnitPreference and assume "/min".
+        // For simplicity, let's assume conversion functions will handle base pressure unit + fixed "/min"
 
-        val p1 = p1Str.toDoubleOrNull()
-        val p2 = p2Str.toDoubleOrNull()
-        val timeDuration = timeDurationStr.toDoubleOrNull()
+        val pressureChangePaPerSec = convertPressureChangeRateToPaPerSec(pressureChangeRateValue, actualPressureRateUnit)
+        val pressureChangeBarPerMin = convertPressureChangeRateToBarPerMin(pressureChangeRateValue, actualPressureRateUnit)
 
-        if (p1 == null) { textInputLayoutInitialPressure.error = getString(R.string.error_invalid_number); return }
-        if (p2 == null) { textInputLayoutFinalPressure.error = getString(R.string.error_invalid_number); return }
-        if (timeDuration == null || timeDuration <= 0) { textInputLayoutTimeDuration.error = getString(R.string.error_non_positive_value); return }
 
-        if (p1 == p2) {
-            val errorMsg = "Initial and final pressures cannot be the same for a leak test."
-            textInputLayoutInitialPressure.error = errorMsg
-            textInputLayoutFinalPressure.error = errorMsg
-            Toast.makeText(this, errorMsg, Toast.LENGTH_LONG).show()
-            return
-        }
+        val bleedDiameterStr = editTextBleedDiameter.text.toString()
+        if (bleedDiameterStr.isEmpty()) { textInputLayoutBleedDiameter.error = getString(R.string.error_empty_field); return }
+        val bleedDiameterValue = parseDimensionInput(bleedDiameterStr)
+        if (bleedDiameterValue == null || bleedDiameterValue <= 0) { textInputLayoutBleedDiameter.error = getString(R.string.error_non_positive_value); return }
 
-        val deltaPUnconverted = abs(p1 - p2)
-        val selectedPressureUnit = spinnerPressureUnits.selectedItem.toString()
-        val deltaPInPa = convertPressureToPa(deltaPUnconverted, selectedPressureUnit)
-        val selectedTimeUnit = spinnerTimeUnits.selectedItem.toString()
-        val timeDurationInMinutes = convertTimeToMinutes(timeDuration, selectedTimeUnit)
+        // <<< USE LOADED PREFERENCE FOR BLEED DIAMETER UNIT >>>
+        val bleedDiameterUnit = currentLineDiameterUnitPreference
+        val bleedDiameterMeters = convertLengthToMeters(bleedDiameterValue, bleedDiameterUnit)
 
-        if (timeDurationInMinutes == 0.0) {
-            Toast.makeText(this, "Time duration cannot result in zero minutes.", Toast.LENGTH_LONG).show()
-            return
-        }
-
-        val leakRateSlpm = (currentSystemVolumeLiters * deltaPInPa) / (STANDARD_ATMOSPHERIC_PRESSURE_PA * timeDurationInMinutes)
-        textViewLeakRateResult.text = String.format(Locale.US, "%.1f SLPM", leakRateSlpm)
+        // ... (rest of calculations and display as before) ...
+        val dPdtPaPerMin = pressureChangePaPerSec * 60.0; val leakRateSlpm = (systemVolumeLiters * abs(dPdtPaPerMin)) / STANDARD_ATMOSPHERIC_PRESSURE_PA; textViewLeakRateResult.text = String.format(Locale.US, "%.1f SLPM", leakRateSlpm)
+        if (bleedDiameterMeters == 0.0) { textViewVelocityResult.text = getString(R.string.error_bleed_diameter_zero); return }; val bleedBoreAreaM2 = 0.25 * PI * bleedDiameterMeters * bleedDiameterMeters; if (bleedBoreAreaM2 == 0.0) { textViewVelocityResult.text = getString(R.string.error_bleed_area_zero); return }
+        val standardizedLeakRateM3BarPerMin = systemVolumeM3 * abs(pressureChangeBarPerMin); val standardizedLeakRateM3BarPerSec = standardizedLeakRateM3BarPerMin / 60.0; val velocityMetersPerSec = standardizedLeakRateM3BarPerSec / bleedBoreAreaM2; textViewVelocityResult.text = String.format(Locale.US, "%.2f m/s", velocityMetersPerSec)
     }
 
-    private fun convertPressureToPa(value: Double, unit: String): Double {
-        return when (unit) {
+    // --- Helper Functions ---
+    // Modify conversion functions to handle base pressure unit + assumed "/min" or parse combined unit
+    private fun convertPressureChangeRateToPaPerSec(value: Double, combinedUnit: String): Double {
+        // Example: "bar/min" -> split to "bar" and "min"
+        val parts = combinedUnit.split('/')
+        val pressureUnit = parts.getOrElse(0) { "" }
+        val timeComponent = parts.getOrElse(1) { "min" } // Default to min if not specified
+
+        var valueInPa = when (pressureUnit) {
             "kPa" -> value * PA_PER_KPA
             "bar" -> value * PA_PER_BAR
             "psi" -> value * PA_PER_PSI
-            "Pa" -> value
-            else -> value
+            "mbar"-> value * PA_PER_MBAR
+            "Pa"  -> value
+            else  -> 0.0
         }
+        // Now adjust for time component to get Pa/sec
+        if (timeComponent == "min") {
+            valueInPa /= 60.0
+        } // if it's "sec", it's already per second. "/hour" would need valueInPa /= 3600.0
+
+        return valueInPa
     }
 
-    private fun convertTimeToMinutes(value: Double, unit: String): Double {
-        return when (unit) {
-            "minutes" -> value
-            "seconds" -> value / 60.0
-            "hours" -> value * 60.0
-            else -> value
-        }
+    private fun convertPressureChangeRateToBarPerMin(value: Double, combinedUnit: String): Double {
+        val paPerSec = convertPressureChangeRateToPaPerSec(value, combinedUnit)
+        return (paPerSec * 60.0) / PA_PER_BAR // Pa/sec to Pa/min, then to bar/min
     }
+    // ... (convertLengthToMeters, parseSimpleFraction, parseDimensionInput - NO CHANGES)
+    private fun convertLengthToMeters(value: Double, unit: String): Double { return when (unit) { "mm" -> value / 1000.0; "cm" -> value / 100.0; "m" -> value; "inches" -> value * 0.0254; else -> value } }
+    private fun parseSimpleFraction(fractionStr: String): Double? { val p = fractionStr.trim().split('/'); if (p.size == 2) { val n = p[0].toDoubleOrNull(); val d = p[1].toDoubleOrNull(); if (n != null && d != null && d != 0.0) return n / d }; return null }
+    private fun parseDimensionInput(input: String): Double? { val s = input.trim(); if (s.isEmpty()) return null; s.toDoubleOrNull()?.let { return it }; if (s.contains('-') && s.contains('/')) { val p = s.split('-', limit = 2); if (p.size == 2) { val w = p[0].toDoubleOrNull(); val f = parseSimpleFraction(p[1]); if (w != null && f != null) return w + f } }; if (s.contains(' ') && s.contains('/')) { val i = s.lastIndexOf(' '); if (i > 0 && s.indexOf('/') > i) { val ws = s.substring(0, i); val fs = s.substring(i + 1); val w = ws.toDoubleOrNull(); val f = parseSimpleFraction(fs); if (w != null && f != null) return w + f } }; return parseSimpleFraction(s) }
 }

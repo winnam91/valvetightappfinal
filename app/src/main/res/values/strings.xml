@@ -1,30 +1,22 @@
 <resources>
     <string name="app_name">ValveTight Vacuum Calculator</string>
-
     <string name="app_title">Vacuum Volume Calculator</string>
     <string name="component_type_label">Component Type:</string>
-
-    <!-- New strings for "Unknown Volume" -->
     <string name="component_name_label">Component Name:</string>
     <string name="component_name_hint">Enter Custom Component Name</string>
-
-    <!-- Existing strings for dimensions -->
-    <string name="enter_inner_diameter_hint">Enter Inner Diameter</string>
-    <string name="enter_length_hint">Enter Length</string>
-    <string name="units_for_dimensions_label">Units for Diameter/Length:</string>
-
-    <!-- New string for Quantity -->
+    <string name="enter_inner_diameter_hint">Inner Diameter</string>
+    <string name="enter_length_hint">Length</string>
     <string name="quantity_label">Quantity:</string>
-    <string name="quantity_hint">Enter Quantity (e.g., 1, 2)</string>
-
-    <!-- Button and Display texts -->
+    <string name="quantity_hint">Enter Quantity</string>
+    <string name="default_quantity">1</string>
     <string name="add_component_button_text">Add Component Volume</string>
     <string name="added_components_list_label">Added Components:</string>
     <string name="total_volume_label_prefix">Total Volume: </string>
     <string name="initial_total_volume">Total Volume: 0.0 L</string>
     <string name="reset_all_button_text">Reset All</string>
-    <string name="default_quantity">1</string>
     <string name="app_logo_description">Valvetight Company Logo</string>
+    <string name="go_to_leak_rate_button_text">Analyze Leak</string>
+    <string name="settings_button_text">Settings</string>
 
     <!-- Error messages -->
     <string name="error_empty_field">Field cannot be empty.</string>
@@ -32,63 +24,44 @@
     <string name="error_non_positive_value">Value must be positive and non-zero.</string>
     <string name="error_invalid_quantity">Quantity must be a positive whole number.</string>
     <string name="error_name_empty">Component name cannot be empty.</string>
+    <string name="error_bleed_diameter_zero">Error: Bleed diameter cannot be zero.</string>
+    <string name="error_bleed_area_zero">Error: Bleed area is zero.</string>
 
-    <string name="leak_rate_activity_title">Leak Rate Calculator</string>
-    <string name="system_volume_label">System Volume:</string>
-    <string name="initial_pressure_label">Initial Pressure (P1):</string>
-    <string name="initial_pressure_hint">Enter Initial Pressure</string>
-    <string name="final_pressure_label">Final Pressure (P2):</string>
-    <string name="final_pressure_hint">Enter Final Pressure</string>
-    <string name="pressure_units_label">Pressure Units:</string>
-    <string name="time_duration_label">Time Duration (Δt):</string>
-    <string name="time_duration_hint">Enter Time Duration</string>
-    <string name="time_units_label">Time Units:</string>
-    <string name="calculate_leak_rate_button">Calculate Leak Rate</string>
-    <string name="calculated_leak_rate_label">Calculated Leak Rate:</string>
+    <!-- Strings for SettingsActivity -->
+    <string name="settings_activity_title">Unit Preferences</string> <!-- This is for the TextView title -->
+    <string name="pref_pressure_unit_label">Pressure Unit:</string>
+    <string name="pref_dimension_unit_label">Dimension Unit:</string>
+    <string name="pref_line_size_unit_label">Line diameter size:</string> <!-- CHANGED LABEL -->
+    <string name="settings_done_button">Done</string>
+    <string name="prefs_saved_toast">Preference saved.</string>
+
+    <!-- Strings for LeakRateActivity / Leak Analysis Activity -->
+    <string name="leak_rate_activity_title">Leak Analysis</string>
+    <string name="system_volume_hint_editable">System Volume</string>
+    <string name="pressure_change_rate_hint">PBU</string>
+    <string name="bleed_diameter_hint">Bleed connection diameter</string>
+
+    <string name="calculate_button">Calculate</string>
+    <string name="leak_rate_label">Leak Rate:</string> <!-- Changed to remove (SLPM) -->
     <string name="leak_rate_result_placeholder">-- SLPM</string>
-    <string name="error_pressure_p1_must_be_greater">Initial pressure (P1) must be greater than final pressure (P2).</string>
-    <string name="system_volume_hint_editable">Enter System Volume (L)</string>
+    <string name="velocity_label">Est. Velocity:</string>
+    <string name="velocity_result_placeholder">-- m/s</string>
 
-    <string-array name="pressure_units_array">
-        <item>kPa</item>
-        <item>bar</item>
-        <item>psi</item>
-        <item>Pa</item> <!-- Added Pascals directly for internal consistency possibility -->
-    </string-array>
-
-    <string-array name="time_units_array">
-        <item>minutes</item>
-        <item>seconds</item>
-        <item>hours</item>
-    </string-array>
-
-
-    <!-- UPDATED component types array -->
+    <!-- Arrays for Spinners (Global Preferences & Fallbacks) -->
     <string-array name="component_types_array">
-        <item>Unknown Volume</item> <!-- Calculate from dimensions -->
-        <item>Hose</item>           <!-- Pre-defined volume -->
-        <item>Spool Piece</item>    <!-- Pre-defined volume -->
-        <item>T-piece</item>        <!-- Pre-defined volume -->
-        <item>Elbow</item>          <!-- Pre-defined volume -->
-        <item>Knock-out Vessel</item> <!-- Pre-defined volume -->
+        <item>Unknown Volume</item> <item>Hose</item> <item>Spool Piece</item>
+        <item>T-piece</item> <item>Elbow</item> <item>Knock-out Vessel</item>
     </string-array>
-
     <string-array name="dimension_units_array">
-        <item>mm</item>
-        <item>cm</item>
-        <item>meters</item>
-        <item>inches</item>
-        <item>feet</item>
+        <item>mm</item> <item>cm</item> <item>meters</item> <item>inches</item> <item>feet</item>
     </string-array>
-
-    <!-- The volume_units_array and associated UI for known volume units might no longer be directly used
-         if "Known Volume" with user-entered value/unit is removed.
-         However, the conversion logic in Kotlin might still be useful internally or for future features.
-         For now, let's keep it, but the UI related to it (spinnerUnitsVolume) will be removed. -->
-    <string-array name="volume_units_array">
-        <item>Liters</item>
-        <item>Cubic Meters</item>
-        <item>Cubic Feet</item>
-        <item>Gallons</item>
+    <string-array name="pressure_units_global_array"> <!-- For Global Pressure Preference -->
+        <item>bar</item> <item>psi</item> <item>kPa</item> <item>mbar</item> <item>Pa</item>
+    </string-array>
+    <string-array name="pressure_change_rate_units_array"> <!-- For LeakRateActivity PBU Unit (will be derived) -->
+        <item>bar/min</item> <item>psi/min</item> <item>kPa/min</item> <item>mbar/min</item> <item>Pa/min</item> <item>Pa/sec</item>
+    </string-array>
+    <string-array name="bleed_diameter_units_array"> <!-- For Global Line Size & LeakRateActivity Bleed Diameter Unit -->
+        <item>mm</item> <item>inches</item> <item>cm</item> <item>m</item>
     </string-array>
 </resources>

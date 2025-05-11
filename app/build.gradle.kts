@@ -39,16 +39,17 @@ android {
     }
 }
 
-// --- ADDED RESOLUTION STRATEGY ---
+// Inside app/build.gradle.kts
 configurations.all {
     resolutionStrategy {
-        // Force the version of androidx.activity libraries to what's defined in libs.versions.toml
-        // This ensures we use activityKtx = "1.9.0" (or whatever you set for activityKtx)
+        // Force the specific KTX artifact.
+        // This should also influence the base 'activity' artifact if they share the same group and versioning scheme.
         force(libs.androidx.activity.ktx)
 
-        // If other libraries cause similar issues, you can add more 'force' lines:
-        // e.g., force(libs.androidx.fragment.ktx) // if you had a fragmentKtx alias and version
-        // For now, we only explicitly force activity.ktx
+        // As an additional, more direct measure, we can force the base 'activity' artifact specifically by string
+        // if the 'libs' alias isn't set up for the non-ktx version or if the above isn't enough.
+        // Make sure the version "1.9.0" is what you intend for compatibility with SDK 34.
+        force("androidx.activity:activity:1.9.0")
     }
 }
 // --- END OF ADDED RESOLUTION STRATEGY ---
@@ -62,7 +63,8 @@ dependencies {
     implementation(libs.androidx.appcompat)           // For AppCompatActivity, Toolbar, etc.
     implementation(libs.androidx.activity.ktx)     // <<< CHANGED from libs.androidx.activity to use the ktx version
     implementation(libs.google.android.material)     // For Material Design Components (TextInputLayout, etc.)
-    implementation(libs.androidx.constraintlayout)   // For ConstraintLayout
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.activity)   // For ConstraintLayout
 
     // Testing
     testImplementation(libs.junit)

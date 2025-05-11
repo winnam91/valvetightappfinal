@@ -10,6 +10,7 @@ activityKtx = "1.9.0"       # <<< CHANGED/ADDED: This is the key version for act
 junit = "4.13.2"
 androidxJunit = "1.2.1"
 espressoCore = "3.6.1"
+activity = "1.10.1"
 # Removed 'activity = "1.10.1"' as we are now using activityKtx
 
 [libraries]
@@ -24,6 +25,7 @@ androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", ve
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxJunit" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 # Removed 'androidx-activity' as we now use 'androidx-activity-ktx'
 
 [plugins]
