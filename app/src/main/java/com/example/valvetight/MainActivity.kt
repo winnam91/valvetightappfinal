@@ -15,6 +15,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Locale
 import kotlin.math.PI
+import androidx.core.view.isVisible
 
 class MainActivity : AppCompatActivity() {
 
@@ -160,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         // Suffix text update is handled by loadUnitPreferencesAndUpdateUI, which is called in onResume
         // and also after spinner selection changes visibility of fields.
         // To be absolutely sure:
-        if (layoutDimensionalInputs.visibility == View.VISIBLE) {
+        if (layoutDimensionalInputs.isVisible) {
             textInputLayoutDiameter.suffixText = currentLineDiameterUnit
             textInputLayoutLength.suffixText = currentDimensionUnit
         }

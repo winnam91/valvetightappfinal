@@ -8,8 +8,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -104,7 +104,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun savePreference(key: String, value: String) {
-        sharedPreferences.edit().putString(key, value).apply()
+        sharedPreferences.edit() { putString(key, value) }
         // Toast.makeText(this, getString(R.string.prefs_saved_toast) + " ($value)", Toast.LENGTH_SHORT).show()
     }
 }

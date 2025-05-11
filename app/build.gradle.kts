@@ -28,11 +28,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8 // Common setting
-        targetCompatibility = JavaVersion.VERSION_1_8 // Common setting
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "1.8" // Match Java compatibility
+        jvmTarget = "11" // Match Java compatibility
     }
     buildFeatures {
         viewBinding = true // Recommended for easy view access in XML layouts
