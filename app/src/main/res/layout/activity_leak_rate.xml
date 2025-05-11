@@ -118,17 +118,35 @@ android:text="@string/velocity_label"
 android:textStyle="bold"
 app:layout_constraintTop_toBottomOf="@id/textViewCalculatedLeakRateLabel"
 app:layout_constraintStart_toStartOf="parent"/>
-<TextView
-android:id="@+id/textViewVelocityResult"
-android:layout_width="0dp"
-android:layout_height="wrap_content"
-android:layout_marginStart="8dp"
-android:text="@string/velocity_result_placeholder"
-android:textAppearance="?attr/textAppearanceBody1"
-app:layout_constraintTop_toTopOf="@id/textViewVelocityLabel"
-app:layout_constraintBottom_toBottomOf="@id/textViewVelocityLabel"
-app:layout_constraintStart_toEndOf="@id/textViewVelocityLabel"
-app:layout_constraintEnd_toEndOf="parent"/>
+        <!-- ... (previous elements up to textViewVelocityResult) ... -->
+
+        <TextView
+            android:id="@+id/textViewVelocityResult"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@string/velocity_result_placeholder"
+            android:textAppearance="?attr/textAppearanceBody1"
+            app:layout_constraintTop_toTopOf="@id/textViewVelocityLabel"
+            app:layout_constraintBottom_toBottomOf="@id/textViewVelocityLabel"
+            app:layout_constraintStart_toEndOf="@id/textViewVelocityLabel"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <!-- Done Button -->
+        <Button
+            android:id="@+id/buttonLeakAnalysisDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/settings_done_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            app:layout_constraintTop_toBottomOf="@id/textViewVelocityLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" /> <!-- Constrain to bottom of ConstraintLayout -->
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

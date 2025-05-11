@@ -18,11 +18,12 @@
         android:exported="false"
         android:theme="@style/Theme.MaterialComponents.Light.Dialog.Alert" />
 
-    <activity
-        android:name=".LeakRateActivity"
-        android:exported="false" />
-    <!-- You might also want LeakRateActivity to have its own theme if needed,
-         or it will inherit from the application's Theme.ValveTight (which is NoActionBar) -->
+        <activity
+            android:name=".LeakRateActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MaterialComponents.Light.Dialog.Alert"/>
+        <!-- You might also want LeakRateActivity to have its own theme if needed,
+             or it will inherit from the application's Theme.ValveTight (which is NoActionBar) -->
 
     <activity
         android:name=".MainActivity"
