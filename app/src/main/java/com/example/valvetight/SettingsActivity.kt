@@ -104,7 +104,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun savePreference(key: String, value: String) {
-        sharedPreferences.edit() { putString(key, value) }
+        sharedPreferences.edit { putString(key, value) }
         // Toast.makeText(this, getString(R.string.prefs_saved_toast) + " ($value)", Toast.LENGTH_SHORT).show()
     }
 }

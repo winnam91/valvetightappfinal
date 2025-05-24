@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
     private var currentDimensionUnit: String = SettingsActivity.DEFAULT_VAL_DIMENSION_UNIT
     private var currentLineDiameterUnit: String = SettingsActivity.DEFAULT_VAL_LINE_SIZE_UNIT
 
-
+    // Lint flagged 'Companion' as unused, but its members are utilized.
     private companion object {
         private const val TYPE_UNKNOWN_VOLUME = "Unknown Volume"
         private const val TYPE_HOSE = "Hose"

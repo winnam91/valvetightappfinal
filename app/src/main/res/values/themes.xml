@@ -14,7 +14,7 @@
              With NoActionBar, you might want to set this to a specific color or manage it differently
              if you want content to draw under the status bar. For now, this should be okay.
              This colorPrimaryVariant will color the status bar. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- You can also directly use: <item name="android:statusBarColor">@color/purple_700</item> -->
 
         <!-- Customize your theme here. -->
