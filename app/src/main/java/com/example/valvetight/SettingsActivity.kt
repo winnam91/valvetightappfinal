@@ -29,8 +29,8 @@ class SettingsActivity : AppCompatActivity() {
 
         // Default units if nothing is saved yet (must match items in your string arrays)
         const val DEFAULT_VAL_PRESSURE_UNIT = "bar"    // From pressure_units_global_array
-        const val DEFAULT_VAL_DIMENSION_UNIT = "mm"   // From dimension_units_array
-        const val DEFAULT_VAL_LINE_SIZE_UNIT = "mm"  // From bleed_diameter_units_array
+        const val DEFAULT_VAL_DIMENSION_UNIT = "meters"   // From dimension_units_array
+        const val DEFAULT_VAL_LINE_SIZE_UNIT = "inches"  // From bleed_diameter_units_array
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

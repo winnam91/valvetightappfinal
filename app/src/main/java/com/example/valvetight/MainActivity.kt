@@ -2,7 +2,11 @@ package com.example.valvetight
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.AdapterView
 import android.widget.Button
@@ -38,7 +42,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonOpenSettings: Button
 
     // --- Data ---
-    private val addedComponentsDescriptions = ArrayList<String>()
+    private val addedComponentsDescriptions = ArrayList<CharSequence>()
     private val addedVolumesInLiters = ArrayList<Double>()
     private var totalVolumeInLiters = 0.0
 
@@ -216,16 +220,50 @@ class MainActivity : AppCompatActivity() {
 
             val singleItemVolumeM3 = singleItemVolumeLiters * 0.001
             val totalVolumeForItemsLiters = singleItemVolumeLiters * quantity
-            val totalVolumeForItemsM3 = totalVolumeForItemsLiters * 0.001
+            // val totalVolumeForItemsM3 = totalVolumeForItemsLiters * 0.001 // Not used in new logic directly for final string.
 
-            val finalDescription = if (quantity > 1) {
-                String.format(Locale.US, "%s x %d (%.1f L / %.3f m³ each): %.1f L (%.3f m³)",
-                    descriptionPart, quantity, singleItemVolumeLiters, singleItemVolumeM3, totalVolumeForItemsLiters, totalVolumeForItemsM3)
-            } else {
-                String.format(Locale.US, "%s: %.1f L (%.3f m³)",
-                    descriptionPart, totalVolumeForItemsLiters, totalVolumeForItemsM3)
+            // --- START MODIFIED CODE for finalDescription ---
+            val spannableBuilder = SpannableStringBuilder()
+
+            // 1. Component Name (Bold)
+            val nameToBold = if (selectedType == TYPE_UNKNOWN_VOLUME) componentDisplayName else descriptionPart
+            val boldSpan = StyleSpan(Typeface.BOLD)
+            val spannableName = SpannableString(nameToBold)
+            spannableName.setSpan(boldSpan, 0, nameToBold.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableBuilder.append(spannableName)
+
+            // 2. Rest of the description (Normal)
+            val detailsString: String
+            if (selectedType == TYPE_UNKNOWN_VOLUME) {
+                // For unknown volume, descriptionPart already contains dimensions, which we don't want bold with the name.
+                // The 'nameToBold' was componentDisplayName. We need to append the rest of the original descriptionPart structure.
+                // Original descriptionPart for unknown: "$componentDisplayName (D: $diameterStr $diameterUnitToUse, L: $lengthStr $lengthUnitToUse)"
+                // We already have componentDisplayName bold. Now add the non-bold part.
+                val diameterStr = editTextDiameter.text.toString() // Re-fetch for safety, though already available
+                val lengthStr = editTextLength.text.toString()   // Re-fetch for safety
+                val diameterUnitToUse = currentLineDiameterUnit
+                val lengthUnitToUse = currentDimensionUnit
+                val unknownDetails = " (D: $diameterStr $diameterUnitToUse, L: $lengthStr $lengthUnitToUse)"
+                detailsString = if (quantity > 1) {
+                    String.format(Locale.US, "%s x %d (%.1f L / %.3f m³ each): %.1f L (%.3f m³)",
+                        unknownDetails, quantity, singleItemVolumeLiters, singleItemVolumeLiters * 0.001, totalVolumeForItemsLiters, totalVolumeForItemsLiters * 0.001)
+                } else {
+                    String.format(Locale.US, "%s: %.1f L (%.3f m³)",
+                        unknownDetails, totalVolumeForItemsLiters, totalVolumeForItemsLiters * 0.001)
+                }
+            } else { // Pre-defined components
+                // For pre-defined, 'nameToBold' was 'descriptionPart' (which is just the component type name)
+                detailsString = if (quantity > 1) {
+                    String.format(Locale.US, " x %d (%.1f L / %.3f m³ each): %.1f L (%.3f m³)",
+                        quantity, singleItemVolumeLiters, singleItemVolumeLiters * 0.001, totalVolumeForItemsLiters, totalVolumeForItemsLiters * 0.001)
+                } else {
+                    String.format(Locale.US, ": %.1f L (%.3f m³)",
+                        totalVolumeForItemsLiters, totalVolumeForItemsLiters * 0.001)
+                }
             }
-            addedComponentsDescriptions.add(finalDescription)
+            spannableBuilder.append(detailsString)
+            addedComponentsDescriptions.add(spannableBuilder)
+            // --- END MODIFIED CODE for finalDescription ---
             addedVolumesInLiters.add(totalVolumeForItemsLiters)
             recalculateTotalVolume()
             updateAddedComponentsListDisplay()
@@ -254,7 +292,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun recalculateTotalVolume() { /* ... as before ... */ totalVolumeInLiters = addedVolumesInLiters.sum() }
-    private fun updateAddedComponentsListDisplay() { /* ... as before ... */ textViewAddedComponentsList.text = if (addedComponentsDescriptions.isEmpty()) "" else addedComponentsDescriptions.joinToString("\n") }
+    // --- START MODIFIED CODE ---
+    private fun updateAddedComponentsListDisplay() {
+        if (addedComponentsDescriptions.isEmpty()) {
+            textViewAddedComponentsList.text = ""
+        } else {
+            val builder = SpannableStringBuilder()
+            addedComponentsDescriptions.forEachIndexed { index, charSequence ->
+                builder.append(charSequence)
+                if (index < addedComponentsDescriptions.size - 1) {
+                    builder.append("\n")
+                }
+            }
+            textViewAddedComponentsList.text = builder
+        }
+    }
+    // --- END MODIFIED CODE ---
     private fun updateTotalVolumeDisplay() { /* ... as before ... */ val totalVolumeM3 = totalVolumeInLiters * 0.001; textViewTotalVolume.text = String.format( Locale.US, "%s%.1f L (%.3f m³)", getString(R.string.total_volume_label_prefix), totalVolumeInLiters, totalVolumeM3 ) }
     private fun parseSimpleFraction(fractionStr: String): Double? { /* ... as before ... */ val parts = fractionStr.trim().split('/'); if (parts.size == 2) { val num = parts[0].toDoubleOrNull(); val den = parts[1].toDoubleOrNull(); if (num != null && den != null && den != 0.0) return num / den }; return null }
     private fun parseDimensionInput(input: String): Double? { /* ... as before ... */ val s = input.trim(); if (s.isEmpty()) return null; s.toDoubleOrNull()?.let { return it }; if (s.contains('-') && s.contains('/')) { val p = s.split('-', limit = 2); if (p.size == 2) { val w = p[0].toDoubleOrNull(); val f = parseSimpleFraction(p[1]); if (w != null && f != null) return w + f } }; if (s.contains(' ') && s.contains('/')) { val i = s.lastIndexOf(' '); if (i > 0 && s.indexOf('/') > i) { val ws = s.substring(0, i); val fs = s.substring(i + 1); val w = ws.toDoubleOrNull(); val f = parseSimpleFraction(fs); if (w != null && f != null) return w + f } }; return parseSimpleFraction(s) }
