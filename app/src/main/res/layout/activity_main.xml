@@ -16,13 +16,13 @@
             android:id="@+id/imageViewLogo"
             android:layout_width="0dp"
             android:layout_height="80dp"
-            android:src="@drawable/valvetight_logo" <!-- Lint Fix Recommendation: The image res/drawable/valvetight_logo.png is in a density-independent folder. For optimal display on various screen densities, consider providing density-specific versions (mdpi, hdpi, xhdpi, etc.) or converting it to an XML vector drawable. -->
+            android:src="@drawable/valvetight_logo"
             android:contentDescription="@string/app_logo_description"
             android:scaleType="fitCenter"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="35dp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"/>

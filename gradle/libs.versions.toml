@@ -1,5 +1,5 @@
 [versions]
-agp = "8.4.2"
+agp = "8.6.1"
 kotlin = "1.9.23" # Changed to align with AGP 8.4.1 for more stability
 coreKtx = "1.16.0"   # Changed to a version compatible with SDK 34
 appcompat = "1.7.0"

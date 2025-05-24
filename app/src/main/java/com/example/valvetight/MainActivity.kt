@@ -219,10 +219,10 @@ class MainActivity : AppCompatActivity() {
             val totalVolumeForItemsM3 = totalVolumeForItemsLiters * 0.001
 
             val finalDescription = if (quantity > 1) {
-                String.format(Locale.US, "%s x %d (%.1f L / %.5f m³ each): %.1f L (%.5f m³)",
+                String.format(Locale.US, "%s x %d (%.1f L / %.3f m³ each): %.1f L (%.3f m³)",
                     descriptionPart, quantity, singleItemVolumeLiters, singleItemVolumeM3, totalVolumeForItemsLiters, totalVolumeForItemsM3)
             } else {
-                String.format(Locale.US, "%s: %.1f L (%.5f m³)",
+                String.format(Locale.US, "%s: %.1f L (%.3f m³)",
                     descriptionPart, totalVolumeForItemsLiters, totalVolumeForItemsM3)
             }
             addedComponentsDescriptions.add(finalDescription)
@@ -255,7 +255,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun recalculateTotalVolume() { /* ... as before ... */ totalVolumeInLiters = addedVolumesInLiters.sum() }
     private fun updateAddedComponentsListDisplay() { /* ... as before ... */ textViewAddedComponentsList.text = if (addedComponentsDescriptions.isEmpty()) "" else addedComponentsDescriptions.joinToString("\n") }
-    private fun updateTotalVolumeDisplay() { /* ... as before ... */ val totalVolumeM3 = totalVolumeInLiters * 0.001; textViewTotalVolume.text = String.format( Locale.US, "%s%.1f L (%.5f m³)", getString(R.string.total_volume_label_prefix), totalVolumeInLiters, totalVolumeM3 ) }
+    private fun updateTotalVolumeDisplay() { /* ... as before ... */ val totalVolumeM3 = totalVolumeInLiters * 0.001; textViewTotalVolume.text = String.format( Locale.US, "%s%.1f L (%.3f m³)", getString(R.string.total_volume_label_prefix), totalVolumeInLiters, totalVolumeM3 ) }
     private fun parseSimpleFraction(fractionStr: String): Double? { /* ... as before ... */ val parts = fractionStr.trim().split('/'); if (parts.size == 2) { val num = parts[0].toDoubleOrNull(); val den = parts[1].toDoubleOrNull(); if (num != null && den != null && den != 0.0) return num / den }; return null }
     private fun parseDimensionInput(input: String): Double? { /* ... as before ... */ val s = input.trim(); if (s.isEmpty()) return null; s.toDoubleOrNull()?.let { return it }; if (s.contains('-') && s.contains('/')) { val p = s.split('-', limit = 2); if (p.size == 2) { val w = p[0].toDoubleOrNull(); val f = parseSimpleFraction(p[1]); if (w != null && f != null) return w + f } }; if (s.contains(' ') && s.contains('/')) { val i = s.lastIndexOf(' '); if (i > 0 && s.indexOf('/') > i) { val ws = s.substring(0, i); val fs = s.substring(i + 1); val w = ws.toDoubleOrNull(); val f = parseSimpleFraction(fs); if (w != null && f != null) return w + f } }; return parseSimpleFraction(s) }
     private fun calculateCylinderVolumeInLiters(diameterInMeters: Double, lengthInMeters: Double): Double { /* ... as before ... */ val r = diameterInMeters / 2.0; return PI * r * r * lengthInMeters * 1000 }
