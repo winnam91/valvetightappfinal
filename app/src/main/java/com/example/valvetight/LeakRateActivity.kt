@@ -2,9 +2,13 @@ package com.example.valvetight
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.widget.Button // Ensure Button is imported
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Locale
@@ -28,7 +32,9 @@ class LeakRateActivity : AppCompatActivity() {
     private lateinit var unitPrefs: SharedPreferences
     private var currentPressureUnitPreference: String = SettingsActivity.DEFAULT_VAL_PRESSURE_UNIT
     private var currentLineDiameterUnitPreference: String = SettingsActivity.DEFAULT_VAL_LINE_SIZE_UNIT
+    private var warningToast: Toast? = null
 
+    // Lint flagged 'Companion' as unused, but its members are utilized.
     private companion object {
         private const val PA_PER_KPA = 1000.0; private const val PA_PER_BAR = 100000.0
         private const val PA_PER_PSI = 6894.757; private const val PA_PER_MBAR = 100.0
@@ -111,6 +117,27 @@ class LeakRateActivity : AppCompatActivity() {
         val dPdtPaPerMin = pressureChangePaPerSec * 60.0; val leakRateSlpm = (systemVolumeLiters * abs(dPdtPaPerMin)) / STANDARD_ATMOSPHERIC_PRESSURE_PA; textViewLeakRateResult.text = String.format(Locale.US, "%.1f SLPM", leakRateSlpm)
         if (bleedDiameterMeters == 0.0) { textViewVelocityResult.text = getString(R.string.error_bleed_diameter_zero); return }; val bleedBoreAreaM2 = 0.25 * PI * bleedDiameterMeters * bleedDiameterMeters; if (bleedBoreAreaM2 == 0.0) { textViewVelocityResult.text = getString(R.string.error_bleed_area_zero); return }
         val standardizedLeakRateM3BarPerMin = systemVolumeM3 * abs(pressureChangeBarPerMin); val standardizedLeakRateM3BarPerSec = standardizedLeakRateM3BarPerMin / 60.0; val velocityMetersPerSec = standardizedLeakRateM3BarPerSec / bleedBoreAreaM2; textViewVelocityResult.text = String.format(Locale.US, "%.2f m/s", velocityMetersPerSec)
+
+        // Cancel any existing warning toast before showing a new one or if condition not met
+        warningToast?.cancel() // This cancels the toast if it's already showing
+
+        if (velocityMetersPerSec > 35.0) {
+            val warningMessage = "Velocity is above 35m/s, please contact support for more information"
+            val spannableString = SpannableString(warningMessage)
+            val orangeColor = ContextCompat.getColor(this, R.color.warning_orange)
+            spannableString.setSpan(ForegroundColorSpan(orangeColor), 0, warningMessage.length, 0)
+
+            // Create and show the new toast, then store it
+            warningToast = Toast.makeText(this, spannableString, Toast.LENGTH_LONG)
+            warningToast?.show()
+        } else {
+            // If velocity is not > 35, ensure any previous warning toast is also cancelled.
+            // This was already handled by the warningToast?.cancel() at the beginning of this block,
+            // so no additional action is needed in the 'else' branch for cancellation.
+            // We can optionally set warningToast to null here if we want to be explicit
+            // that there's no active warning toast being managed.
+            warningToast = null
+        }
     }
 
     // --- Helper Functions (convertPressureChangeRateToPaPerSec, convertPressureChangeRateToBarPerMin, convertLengthToMeters, parse helpers) ---

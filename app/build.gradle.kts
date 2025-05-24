@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.valvetight"
-    compileSdk = 34 // Using latest stable Android SDK
+    compileSdk = 35 // Using latest stable Android SDK
 
     defaultConfig {
         applicationId = "com.example.valvetight"
         minSdk = 29 // As per your initial requirement
-        targetSdk = 34 // Target latest stable SDK for better compatibility and features
+        targetSdk = 35 // Target latest stable SDK for better compatibility and features
         versionCode = 1
         versionName = "1.0"
 
@@ -48,12 +48,15 @@ configurations.all {
 
         // As an additional, more direct measure, we can force the base 'activity' artifact specifically by string
         // if the 'libs' alias isn't set up for the non-ktx version or if the above isn't enough.
-        // Make sure the version "1.9.0" is what you intend for compatibility with SDK 34.
-        force("androidx.activity:activity:1.9.0")
+        // Make sure the version "1.10.1" is what you intend for compatibility with SDK 35.
+        force("androidx.activity:activity:1.10.1")
     }
 }
 // --- END OF ADDED RESOLUTION STRATEGY ---
 
+// Lint reported 'Unnecessary module dependency' for test modules not depending on app.main.
+// Standard Android project structure with test code in src/test and src/androidTest implicitly creates this dependency.
+// If actual tests are failing to resolve app code, further build configuration review would be needed.
 dependencies {
     // Core Android & Kotlin
     implementation(libs.androidx.core.ktx)

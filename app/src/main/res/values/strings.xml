@@ -2,11 +2,9 @@
     <string name="app_name">ValveTight Vacuum Calculator</string>
     <string name="app_title">Vacuum Volume Calculator</string>
     <string name="component_type_label">Component Type:</string>
-    <string name="component_name_label">Component Name:</string>
     <string name="component_name_hint">Enter Custom Component Name</string>
     <string name="enter_inner_diameter_hint">Inner Diameter</string>
     <string name="enter_length_hint">Length</string>
-    <string name="quantity_label">Quantity:</string>
     <string name="quantity_hint">Enter Quantity</string>
     <string name="default_quantity">1</string>
     <string name="add_component_button_text">Add Component Volume</string>
@@ -33,7 +31,6 @@
     <string name="pref_dimension_unit_label">Dimension Unit:</string>
     <string name="pref_line_size_unit_label">Line diameter size:</string> <!-- CHANGED LABEL -->
     <string name="settings_done_button">Done</string>
-    <string name="prefs_saved_toast">Preference saved.</string>
 
     <!-- Strings for LeakRateActivity / Leak Analysis Activity -->
     <string name="leak_rate_activity_title">Leak Analysis</string>
@@ -57,9 +54,6 @@
     </string-array>
     <string-array name="pressure_units_global_array"> <!-- For Global Pressure Preference -->
         <item>bar</item> <item>psi</item> <item>kPa</item> <item>mbar</item> <item>Pa</item>
-    </string-array>
-    <string-array name="pressure_change_rate_units_array"> <!-- For LeakRateActivity PBU Unit (will be derived) -->
-        <item>bar/min</item> <item>psi/min</item> <item>kPa/min</item> <item>mbar/min</item> <item>Pa/min</item> <item>Pa/sec</item>
     </string-array>
     <string-array name="bleed_diameter_units_array"> <!-- For Global Line Size & LeakRateActivity Bleed Diameter Unit -->
         <item>mm</item> <item>inches</item> <item>cm</item> <item>m</item>

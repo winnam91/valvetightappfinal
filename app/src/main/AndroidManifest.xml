@@ -16,11 +16,13 @@
     <activity
         android:name=".SettingsActivity"
         android:exported="false"
+        android:screenOrientation="portrait"
         android:theme="@style/Theme.MaterialComponents.Light.Dialog.Alert" />
 
         <activity
             android:name=".LeakRateActivity"
             android:exported="false"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.MaterialComponents.Light.Dialog.Alert"/>
         <!-- You might also want LeakRateActivity to have its own theme if needed,
              or it will inherit from the application's Theme.ValveTight (which is NoActionBar) -->
@@ -29,8 +31,7 @@
         android:name=".MainActivity"
         android:exported="true"
         android:screenOrientation="portrait"
-        android:theme="@style/Theme.ValveTight"
-    tools:ignore="LockedOrientationActivity">
+        android:theme="@style/Theme.ValveTight">
     <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

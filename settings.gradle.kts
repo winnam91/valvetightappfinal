@@ -1,3 +1,5 @@
+// Note: This file uses Gradle APIs marked as @Incubating by lint (e.g., getRepositoriesMode, FAIL_ON_PROJECT_REPOS).
+// These are used as per current Gradle recommendations and are subject to change in future Gradle versions.
 pluginManagement {
     repositories {
         google {
