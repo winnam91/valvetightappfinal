@@ -4,7 +4,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.view.LayoutInflater
 import android.widget.Button // Ensure Button is imported
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -127,9 +129,22 @@ class LeakRateActivity : AppCompatActivity() {
             val orangeColor = ContextCompat.getColor(this, R.color.warning_orange)
             spannableString.setSpan(ForegroundColorSpan(orangeColor), 0, warningMessage.length, 0)
 
-            // Create and show the new toast, then store it
-            warningToast = Toast.makeText(this, spannableString, Toast.LENGTH_LONG)
-            warningToast?.show()
+            // Create and show the new custom toast, then store it
+            val inflater = LayoutInflater.from(this)
+            // Pass null as the root ViewGroup, as this layout is for a Toast
+            val layout = inflater.inflate(R.layout.custom_toast_layout, null)
+
+            val icon = layout.findViewById<ImageView>(R.id.toast_icon)
+            icon.setImageResource(R.drawable.valvetight_logo_icon) // XML already does this, but explicit
+
+            val text = layout.findViewById<TextView>(R.id.toast_text)
+            text.text = spannableString
+
+            warningToast = Toast(applicationContext).apply {
+                duration = Toast.LENGTH_LONG
+                view = layout
+                show()
+            }
         } else {
             // If velocity is not > 35, ensure any previous warning toast is also cancelled.
             // This was already handled by the warningToast?.cancel() at the beginning of this block,
