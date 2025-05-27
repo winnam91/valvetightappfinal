@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.example.valvetight.app-mergeDebugResources-37:/layout/activity_main.xml",
+        "source": "com.example.valvetight.app-main-40:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\liam_\\.gradle\\daemon\\8.11.1\\com.example.valvetight.app-mergeDebugResources-37:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\liam_\\.gradle\\daemon\\8.11.1\\com.example.valvetight.app-main-40:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\liam_\\.gradle\\daemon\\8.11.1\\com.example.valvetight.app-mergeDebugResources-37:\\layout\\activity_settings.xml",
+        "source": "C:\\Users\\liam_\\.gradle\\daemon\\8.11.1\\com.example.valvetight.app-main-40:\\layout\\activity_settings.xml"
+    },
+    {
+        "merged": "C:\\Users\\liam_\\.gradle\\daemon\\8.11.1\\com.example.valvetight.app-mergeDebugResources-37:\\layout\\activity_leak_rate.xml",
+        "source": "C:\\Users\\liam_\\.gradle\\daemon\\8.11.1\\com.example.valvetight.app-main-40:\\layout\\activity_leak_rate.xml"
+    }
+]
