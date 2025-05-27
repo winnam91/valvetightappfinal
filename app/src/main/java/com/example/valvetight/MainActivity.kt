@@ -15,6 +15,8 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.widget.ImageView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import java.util.Locale
@@ -132,6 +134,24 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showCustomToast(message: CharSequence, duration: Int) {
+        val inflater = LayoutInflater.from(this)
+        // Pass null as the root ViewGroup, as this layout is for a Toast
+        val layout = inflater.inflate(R.layout.custom_toast_layout, null)
+
+        val icon = layout.findViewById<ImageView>(R.id.toast_icon)
+        icon.setImageResource(R.drawable.valvetight_logo_icon) // XML already sets this
+
+        val text = layout.findViewById<TextView>(R.id.toast_text)
+        text.text = message
+
+        Toast(applicationContext).apply {
+            this.duration = duration
+            view = layout
+            show()
+        }
+    }
+
     private fun updateUIForSelectedComponentType() {
         val selectedType = spinnerComponentType.selectedItem.toString()
         textInputLayoutComponentName.visibility = View.GONE
@@ -179,9 +199,9 @@ class MainActivity : AppCompatActivity() {
         var componentDisplayName = selectedType
 
         val quantityStr = editTextQuantity.text.toString()
-        if (quantityStr.isEmpty()) { textInputLayoutQuantity.error = getString(R.string.error_empty_field); Toast.makeText(this, "Quantity " + getString(R.string.error_empty_field), Toast.LENGTH_SHORT).show(); return }
+        if (quantityStr.isEmpty()) { textInputLayoutQuantity.error = getString(R.string.error_empty_field); showCustomToast("Quantity " + getString(R.string.error_empty_field), Toast.LENGTH_SHORT); return }
         val quantity = quantityStr.toIntOrNull()
-        if (quantity == null || quantity <= 0) { textInputLayoutQuantity.error = getString(R.string.error_invalid_quantity); Toast.makeText(this, getString(R.string.error_invalid_quantity), Toast.LENGTH_SHORT).show(); return }
+        if (quantity == null || quantity <= 0) { textInputLayoutQuantity.error = getString(R.string.error_invalid_quantity); showCustomToast(getString(R.string.error_invalid_quantity), Toast.LENGTH_SHORT); return }
 
         textInputLayoutQuantity.error = null
         textInputLayoutComponentName.error = null
@@ -191,19 +211,19 @@ class MainActivity : AppCompatActivity() {
         try {
             if (selectedType == TYPE_UNKNOWN_VOLUME) {
                 componentDisplayName = editTextComponentName.text.toString().trim()
-                if (componentDisplayName.isEmpty()) { textInputLayoutComponentName.error = getString(R.string.error_name_empty); Toast.makeText(this, getString(R.string.error_name_empty), Toast.LENGTH_SHORT).show(); return }
+                if (componentDisplayName.isEmpty()) { textInputLayoutComponentName.error = getString(R.string.error_name_empty); showCustomToast(getString(R.string.error_name_empty), Toast.LENGTH_SHORT); return }
 
                 val diameterStr = editTextDiameter.text.toString()
                 val lengthStr = editTextLength.text.toString()
-                if (diameterStr.isEmpty()) { textInputLayoutDiameter.error = getString(R.string.error_empty_field); Toast.makeText(this, "Diameter " + getString(R.string.error_empty_field), Toast.LENGTH_SHORT).show(); return }
-                if (lengthStr.isEmpty()) { textInputLayoutLength.error = getString(R.string.error_empty_field); Toast.makeText(this, "Length " + getString(R.string.error_empty_field), Toast.LENGTH_SHORT).show(); return }
+                if (diameterStr.isEmpty()) { textInputLayoutDiameter.error = getString(R.string.error_empty_field); showCustomToast("Diameter " + getString(R.string.error_empty_field), Toast.LENGTH_SHORT); return }
+                if (lengthStr.isEmpty()) { textInputLayoutLength.error = getString(R.string.error_empty_field); showCustomToast("Length " + getString(R.string.error_empty_field), Toast.LENGTH_SHORT); return }
 
                 val diameter = parseDimensionInput(diameterStr)
                 val length = parseDimensionInput(lengthStr)
-                if (diameter == null) { textInputLayoutDiameter.error = getString(R.string.error_invalid_number); Toast.makeText(this, "Diameter " + getString(R.string.error_invalid_number), Toast.LENGTH_SHORT).show(); return }
-                if (diameter <= 0) { textInputLayoutDiameter.error = getString(R.string.error_non_positive_value); Toast.makeText(this, "Diameter " + getString(R.string.error_non_positive_value), Toast.LENGTH_SHORT).show(); return }
-                if (length == null) { textInputLayoutLength.error = getString(R.string.error_invalid_number); Toast.makeText(this, "Length " + getString(R.string.error_invalid_number), Toast.LENGTH_SHORT).show(); return }
-                if (length <= 0) { textInputLayoutLength.error = getString(R.string.error_non_positive_value); Toast.makeText(this, "Length " + getString(R.string.error_non_positive_value), Toast.LENGTH_SHORT).show(); return }
+                if (diameter == null) { textInputLayoutDiameter.error = getString(R.string.error_invalid_number); showCustomToast("Diameter " + getString(R.string.error_invalid_number), Toast.LENGTH_SHORT); return }
+                if (diameter <= 0) { textInputLayoutDiameter.error = getString(R.string.error_non_positive_value); showCustomToast("Diameter " + getString(R.string.error_non_positive_value), Toast.LENGTH_SHORT); return }
+                if (length == null) { textInputLayoutLength.error = getString(R.string.error_invalid_number); showCustomToast("Length " + getString(R.string.error_invalid_number), Toast.LENGTH_SHORT); return }
+                if (length <= 0) { textInputLayoutLength.error = getString(R.string.error_non_positive_value); showCustomToast("Length " + getString(R.string.error_non_positive_value), Toast.LENGTH_SHORT); return }
 
                 val diameterUnitToUse = currentLineDiameterUnit
                 val lengthUnitToUse = currentDimensionUnit
@@ -270,7 +290,7 @@ class MainActivity : AppCompatActivity() {
             updateTotalVolumeDisplay()
             clearInputFields(selectedType)
         } catch (e: Exception) {
-            Toast.makeText(this, "Error: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
+            showCustomToast("Error: ${e.localizedMessage}", Toast.LENGTH_LONG)
         }
     }
 
@@ -288,7 +308,7 @@ class MainActivity : AppCompatActivity() {
         spinnerComponentType.setSelection(0)
         clearInputFields()
         // updateUIForSelectedComponentType() // Already called by spinner listener
-        Toast.makeText(this, "All data reset", Toast.LENGTH_SHORT).show()
+        showCustomToast("All data reset", Toast.LENGTH_SHORT)
     }
 
     private fun recalculateTotalVolume() { /* ... as before ... */ totalVolumeInLiters = addedVolumesInLiters.sum() }
